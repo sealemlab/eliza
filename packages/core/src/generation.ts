@@ -204,6 +204,8 @@ export async function generateText({
             }
 
             case ModelProviderName.GOOGLE: {
+                elizaLogger.debug("[Google] Generating with prompt:", context);
+
                 const google = createGoogleGenerativeAI({
                     fetch: runtime.fetch,
                 });
@@ -220,6 +222,8 @@ export async function generateText({
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
                 });
+
+                elizaLogger.debug("[Google] Model response:", googleResponse);
 
                 response = googleResponse;
                 elizaLogger.debug("Received response from Google model.");
