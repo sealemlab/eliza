@@ -607,8 +607,9 @@ export class TokenProvider {
 
     async fetchDexScreenerData(): Promise<DexScreenerData> {
         const cacheKey = `dexScreenerData_${this.tokenAddress}`;
-        const cachedData = this.getCachedData<DexScreenerData>(cacheKey);
+        const cachedData = await this.getCachedData<DexScreenerData>(cacheKey);
         if (cachedData) {
+            console.log(cachedData);
             console.log("Returning cached DexScreener data.");
             return cachedData;
         }
