@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'eliza',
       script: 'pnpm',
-      args: 'start --character="characters/cryptomaddoc.character.json"',
+      args: 'start --character="characters/cryptomaddoc.character.json,characters/cryptochili.character.json"',
       autorestart: true,
       max_restarts: 5,
       min_uptime: '10s',
