@@ -162,7 +162,7 @@ export class TokenProvider {
     async fetchTokenCodex(): Promise<TokenCodex> {
         try {
             const cacheKey = `token_${this.tokenAddress}`;
-            const cachedData = this.getCachedData<TokenCodex>(cacheKey);
+            const cachedData = await this.getCachedData<TokenCodex>(cacheKey);
             if (cachedData) {
                 console.log(
                     `Returning cached token data for ${this.tokenAddress}.`
@@ -342,7 +342,7 @@ export class TokenProvider {
 
     async fetchTokenSecurity(): Promise<TokenSecurityData> {
         const cacheKey = `tokenSecurity_${this.tokenAddress}`;
-        const cachedData = this.getCachedData<TokenSecurityData>(cacheKey);
+        const cachedData = await this.getCachedData<TokenSecurityData>(cacheKey);
         if (cachedData) {
             console.log(
                 `Returning cached token security data for ${this.tokenAddress}.`
@@ -372,7 +372,7 @@ export class TokenProvider {
 
     async fetchTokenTradeData(): Promise<TokenTradeData> {
         const cacheKey = `tokenTradeData_${this.tokenAddress}`;
-        const cachedData = this.getCachedData<TokenTradeData>(cacheKey);
+        const cachedData = await this.getCachedData<TokenTradeData>(cacheKey);
         if (cachedData) {
             console.log(
                 `Returning cached token trade data for ${this.tokenAddress}.`
@@ -748,7 +748,7 @@ export class TokenProvider {
 
     async fetchHolderList(): Promise<HolderData[]> {
         const cacheKey = `holderList_${this.tokenAddress}`;
-        const cachedData = this.getCachedData<HolderData[]>(cacheKey);
+        const cachedData = await this.getCachedData<HolderData[]>(cacheKey);
         if (cachedData) {
             console.log("Returning cached holder list.");
             return cachedData;
