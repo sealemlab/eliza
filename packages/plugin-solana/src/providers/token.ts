@@ -648,7 +648,7 @@ export class TokenProvider {
         symbol: string
     ): Promise<DexScreenerPair | null> {
         const cacheKey = `dexScreenerData_search_${symbol}`;
-        const cachedData = this.getCachedData<DexScreenerData>(cacheKey);
+        const cachedData = await this.getCachedData<DexScreenerData>(cacheKey);
         if (cachedData) {
             console.log("Returning cached search DexScreener data.");
             return this.getHighestLiquidityPair(cachedData);
