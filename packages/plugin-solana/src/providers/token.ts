@@ -246,7 +246,6 @@ export class TokenProvider {
             const cachedData = this.getCachedData<Prices>(cacheKey);
             if (cachedData) {
                 console.log("Returning cached prices.");
-                console.log("cachedData:", cachedData);
                 return cachedData;
             }
             const { SOL, BTC, ETH } = PROVIDER_CONFIG.TOKEN_ADDRESSES;
@@ -289,7 +288,9 @@ export class TokenProvider {
     }
     async calculateBuyAmounts(): Promise<CalculatedBuyAmounts> {
         const dexScreenerData = await this.fetchDexScreenerData();
+        console.log("dexScreenerData:", dexScreenerData);
         const prices = await this.fetchPrices();
+        console.log("prices:", prices);
         const solPrice = toBN(prices.solana.usd);
 
         if (!dexScreenerData || dexScreenerData.pairs.length === 0) {
@@ -609,7 +610,6 @@ export class TokenProvider {
         const cachedData = this.getCachedData<DexScreenerData>(cacheKey);
         if (cachedData) {
             console.log("Returning cached DexScreener data.");
-            console.log("cachedData:", cachedData);
             return cachedData;
         }
 

@@ -40,6 +40,7 @@ export class SimulationSellingService {
         this.trustScoreDb = trustScoreDb;
 
         this.connection = new Connection(runtime.getSetting("RPC_URL"));
+        this.runtime = runtime;
         this.initializeWalletProvider();
         this.baseMint = new PublicKey(
             runtime.getSetting("BASE_MINT") ||
@@ -50,7 +51,6 @@ export class SimulationSellingService {
         this.initializeRabbitMQ(runtime.getSetting("AMQP_URL"));
         this.sonarBe = runtime.getSetting("SONAR_BE");
         this.sonarBeToken = runtime.getSetting("SONAR_BE_TOKEN");
-        this.runtime = runtime;
     }
     /**
      * Initializes the RabbitMQ connection and starts consuming messages.
