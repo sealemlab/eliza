@@ -288,9 +288,7 @@ export class TokenProvider {
     }
     async calculateBuyAmounts(): Promise<CalculatedBuyAmounts> {
         const dexScreenerData = await this.fetchDexScreenerData();
-        console.log("dexScreenerData:", dexScreenerData);
         const prices = await this.fetchPrices();
-        console.log("prices:", prices);
         const solPrice = toBN(prices.solana.usd);
 
         if (!dexScreenerData || dexScreenerData.pairs.length === 0) {
@@ -650,7 +648,7 @@ export class TokenProvider {
         symbol: string
     ): Promise<DexScreenerPair | null> {
         const cacheKey = `dexScreenerData_search_${symbol}`;
-        const cachedData = await this.getCachedData<DexScreenerData>(cacheKey);
+        const cachedData = this.getCachedData<DexScreenerData>(cacheKey);
         if (cachedData) {
             console.log("Returning cached search DexScreener data.");
             return this.getHighestLiquidityPair(cachedData);

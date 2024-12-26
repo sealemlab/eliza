@@ -22,7 +22,7 @@ import { settings } from "@elizaos/core";
 import { IAgentRuntime, Memory, Provider, State } from "@elizaos/core";
 import { v4 as uuidv4 } from "uuid";
 
-const Wallet = settings.MAIN_WALLET_ADDRESS;
+const Wallet = settings.SOLANA_PUBLIC_KEY;
 interface TradeData {
     buy_amount: number;
     is_simulation: boolean;
