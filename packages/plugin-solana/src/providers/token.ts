@@ -243,7 +243,7 @@ export class TokenProvider {
     async fetchPrices(): Promise<Prices> {
         try {
             const cacheKey = "prices";
-            const cachedData = this.getCachedData<Prices>(cacheKey);
+            const cachedData = await this.getCachedData<Prices>(cacheKey);
             if (cachedData) {
                 console.log("Returning cached prices.");
                 return cachedData;
@@ -609,7 +609,6 @@ export class TokenProvider {
         const cacheKey = `dexScreenerData_${this.tokenAddress}`;
         const cachedData = await this.getCachedData<DexScreenerData>(cacheKey);
         if (cachedData) {
-            console.log(cachedData);
             console.log("Returning cached DexScreener data.");
             return cachedData;
         }
