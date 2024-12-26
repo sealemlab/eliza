@@ -176,6 +176,7 @@ export class SimulationSellingService {
      * If TEE mode is disabled, uses the provided Solana public key or wallet public key from settings.
      */
     private async initializeWalletProvider(): Promise<void> {
+        console.log("Initializing wallet provider..., runtime:", this.runtime);
         const { publicKey } = await getWalletKey(this.runtime, false);
 
         this.walletProvider = new WalletProvider(this.connection, publicKey);
