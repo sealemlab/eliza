@@ -209,6 +209,9 @@ export class TokenProvider {
                     variables,
                 }),
             }).then((res) => res.json());
+            console.log("query: ", query);
+            console.log("variables: ", variables);
+            console.log("response: ", response);
 
             const token = response.data?.data?.token;
 
