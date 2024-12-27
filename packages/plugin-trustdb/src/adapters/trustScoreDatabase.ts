@@ -779,8 +779,7 @@ export class TrustScoreDatabase {
                 performance.suspiciousVolume ? 1 : 0,
                 validationTrust,
                 performance.balance,
-                performance.initialMarketCap,
-                performance.lastUpdated.toISOString()
+                performance.initialMarketCap
             );
             console.log(
                 `Upserted token performance for ${performance.tokenAddress}`
