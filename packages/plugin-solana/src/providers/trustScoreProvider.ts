@@ -405,7 +405,7 @@ export class TrustScoreManager {
             id: tokenUUId,
             recommenderId: recommenderId,
             tokenAddress: tokenAddress,
-            timestamp: new Date(),
+            timestamp: new Date().toISOString(),
             initialMarketCap:
                 processedData.dexScreenerData.pairs[0]?.marketCap || 0,
             initialLiquidity:
