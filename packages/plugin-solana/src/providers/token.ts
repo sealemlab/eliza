@@ -265,6 +265,7 @@ export class TokenProvider {
                         },
                     }
                 );
+                console.log("response: ", response);
 
                 if (response?.data?.value) {
                     const price = response.data.value.toString();
