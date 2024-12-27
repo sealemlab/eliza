@@ -925,7 +925,8 @@ export class TrustScoreDatabase {
                     recommendation.id || uuidv4(),
                     recommendation.recommenderId,
                     recommendation.tokenAddress,
-                    recommendation.timestamp || new Date(),
+                    recommendation.timestamp.toISOString() ||
+                        new Date().toISOString(),
                     recommendation.initialMarketCap || null,
                     recommendation.initialLiquidity || null,
                     recommendation.initialPrice || null
