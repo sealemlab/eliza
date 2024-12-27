@@ -209,14 +209,11 @@ export class TokenProvider {
                     variables,
                 }),
             }).then((res) => res.json());
-            console.log("query: ", query);
-            console.log("variables: ", variables);
-            console.log("response: ", response);
 
-            const token = response.data?.data?.token;
+            const token = response.data?.token;
 
             if (!token) {
-                throw new Error(`No data returned for token ${tokenAddress}`);
+                throw new Error(`No data returned for token ${this.tokenAddress}`);
             }
 
             this.setCachedData(cacheKey, token);
