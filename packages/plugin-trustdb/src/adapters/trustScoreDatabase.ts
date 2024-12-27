@@ -724,6 +724,7 @@ export class TrustScoreDatabase {
         const sql = `
             INSERT INTO token_performance (
                 token_address,
+                symbol,
                 price_change_24h,
                 volume_change_24h,
                 trade_24h_change,
@@ -740,8 +741,9 @@ export class TrustScoreDatabase {
                 balance,
                 initial_market_cap,
                 last_updated
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
             ON CONFLICT(token_address) DO UPDATE SET
+                symbol = excluded.symbol,
                 price_change_24h = excluded.price_change_24h,
                 volume_change_24h = excluded.volume_change_24h,
                 trade_24h_change = excluded.trade_24h_change,
@@ -762,21 +764,23 @@ export class TrustScoreDatabase {
         try {
             this.db.prepare(sql).run(
                 performance.tokenAddress,
+                performance.symbol,
                 performance.priceChange24h,
                 performance.volumeChange24h,
                 performance.trade_24h_change,
                 performance.liquidity,
                 performance.liquidityChange24h,
-                performance.holderChange24h, // Ensure column name matches schema
+                performance.holderChange24h,
                 performance.rugPull ? 1 : 0,
                 performance.isScam ? 1 : 0,
                 performance.marketCapChange24h,
                 performance.sustainedGrowth ? 1 : 0,
                 performance.rapidDump ? 1 : 0,
                 performance.suspiciousVolume ? 1 : 0,
+                validationTrust,
                 performance.balance,
                 performance.initialMarketCap,
-                validationTrust
+                performance.lastUpdated.toISOString()
             );
             console.log(
                 `Upserted token performance for ${performance.tokenAddress}`
