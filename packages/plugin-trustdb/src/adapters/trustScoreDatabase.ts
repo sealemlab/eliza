@@ -1372,10 +1372,10 @@ export class TrustScoreDatabase {
                 .run(
                     transaction.tokenAddress,
                     transaction.transactionHash,
-                    transaction.type.toString(),
+                    transaction.type,
                     transaction.amount,
                     transaction.price,
-                    transaction.isSimulation,
+                    transaction.isSimulation ? 1 : 0,
                     transaction.timestamp
                 );
             return true;
