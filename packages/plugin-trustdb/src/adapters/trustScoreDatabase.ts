@@ -1364,7 +1364,7 @@ export class TrustScoreDatabase {
             price,
             is_simulation,
             timestamp
-        ) VALUES (?, ?, ?, ?, ?, ?);
+        ) VALUES (?, ?, ?, ?, ?, ?, ?);
     `;
         try {
             this.db
