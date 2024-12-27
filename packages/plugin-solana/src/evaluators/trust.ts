@@ -254,6 +254,7 @@ async function handler(runtime: IAgentRuntime, message: Memory) {
 
         switch (rec.type) {
             case "buy":
+                console.log('rec: ',rec);
                 // for now, lets just assume buy only, but we should implement
                 await trustScoreManager.createTradePerformance(
                     runtime,
