@@ -241,6 +241,7 @@ async function handler(runtime: IAgentRuntime, message: Memory) {
             // for now just put in 10 sol
             buyAmount = 10;
         }
+        rec.buyAmount = buyAmount;
 
         // TODO: is this is a buy, sell, dont buy, or dont sell?
         const shouldTrade = await tokenProvider.shouldTradeToken();
@@ -254,7 +255,7 @@ async function handler(runtime: IAgentRuntime, message: Memory) {
 
         switch (rec.type) {
             case "buy":
-                console.log('rec: ',rec);
+                console.log('rec: ', rec);
                 // for now, lets just assume buy only, but we should implement
                 await trustScoreManager.createTradePerformance(
                     runtime,
