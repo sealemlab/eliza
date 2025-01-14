@@ -430,10 +430,21 @@ export function getTokenForProvider(
                 settings.AKASH_CHAT_API_KEY
             );
         case ModelProviderName.GOOGLE:
-            return (
-                character.settings?.secrets?.GOOGLE_GENERATIVE_AI_API_KEY ||
-                settings.GOOGLE_GENERATIVE_AI_API_KEY
-            );
+            const googleApiKey = character.settings?.secrets?.GOOGLE_GENERATIVE_AI_API_KEY ||
+                settings.GOOGLE_GENERATIVE_AI_API_KEY;
+
+            if (!googleApiKey) {
+                elizaLogger.error("Missing GOOGLE_GENERATIVE_AI_API_KEY");
+                throw new Error("Missing GOOGLE_GENERATIVE_AI_API_KEY");
+            }
+
+            if (googleApiKey === "${GOOGLE_GENERATIVE_AI_API_KEY}") {
+                elizaLogger.error("GOOGLE_GENERATIVE_AI_API_KEY not properly interpolated");
+                throw new Error("GOOGLE_GENERATIVE_AI_API_KEY not properly interpolated");
+            }
+
+            elizaLogger.info(`Google API Key configured: ${googleApiKey.substring(0, 6)}...`);
+            return googleApiKey;
         case ModelProviderName.MISTRAL:
             return (
                 character.settings?.secrets?.MISTRAL_API_KEY ||
@@ -1067,19 +1078,3 @@ startAgents().catch((error) => {
     process.exit(1);
 });
 
-// Add API key validation function
-function validateApiKeys(character: Character) {
-    const apiKey = character.settings?.secrets?.GOOGLE_GENERATIVE_AI_API_KEY;
-
-    if (!apiKey) {
-        throw new Error("Missing GOOGLE_GENERATIVE_AI_API_KEY in character settings");
-    }
-
-    // Check if the API key is still a template variable
-    if (apiKey === "${GOOGLE_GENERATIVE_AI_API_KEY}") {
-        throw new Error("GOOGLE_GENERATIVE_AI_API_KEY not properly interpolated");
-    }
-
-    // Log partial key for debugging (first 6 chars only)
-    elizaLogger.info(`API Key configured: ${apiKey.substring(0, 6)}...`);
-}
