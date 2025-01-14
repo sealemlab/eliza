@@ -724,6 +724,7 @@ export class TrustScoreDatabase {
         const sql = `
             INSERT INTO token_performance (
                 token_address,
+                symbol,
                 price_change_24h,
                 volume_change_24h,
                 trade_24h_change,
@@ -740,8 +741,9 @@ export class TrustScoreDatabase {
                 balance,
                 initial_market_cap,
                 last_updated
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
             ON CONFLICT(token_address) DO UPDATE SET
+                symbol = excluded.symbol,
                 price_change_24h = excluded.price_change_24h,
                 volume_change_24h = excluded.volume_change_24h,
                 trade_24h_change = excluded.trade_24h_change,
@@ -762,21 +764,22 @@ export class TrustScoreDatabase {
         try {
             this.db.prepare(sql).run(
                 performance.tokenAddress,
+                performance.symbol,
                 performance.priceChange24h,
                 performance.volumeChange24h,
                 performance.trade_24h_change,
                 performance.liquidity,
                 performance.liquidityChange24h,
-                performance.holderChange24h, // Ensure column name matches schema
+                performance.holderChange24h,
                 performance.rugPull ? 1 : 0,
                 performance.isScam ? 1 : 0,
                 performance.marketCapChange24h,
                 performance.sustainedGrowth ? 1 : 0,
                 performance.rapidDump ? 1 : 0,
                 performance.suspiciousVolume ? 1 : 0,
+                validationTrust,
                 performance.balance,
-                performance.initialMarketCap,
-                validationTrust
+                performance.initialMarketCap
             );
             console.log(
                 `Upserted token performance for ${performance.tokenAddress}`
@@ -925,7 +928,8 @@ export class TrustScoreDatabase {
                     recommendation.id || uuidv4(),
                     recommendation.recommenderId,
                     recommendation.tokenAddress,
-                    recommendation.timestamp || new Date(),
+                    recommendation.timestamp.toISOString() ||
+                        new Date().toISOString(),
                     recommendation.initialMarketCap || null,
                     recommendation.initialLiquidity || null,
                     recommendation.initialPrice || null
@@ -1196,30 +1200,29 @@ export class TrustScoreDatabase {
             rapidDump = ?,
             sell_recommender_id = ?
         WHERE
-            token_address = ?
-            AND recommender_id = ?
-            AND buy_timeStamp = ?;
+            token_address = ? AND
+            recommender_id = ? AND
+            buy_timeStamp = ?;
     `;
         try {
-            const result = this.db
-                .prepare(sql)
-                .run(
-                    sellDetails.sell_price,
-                    sellDetails.sell_timeStamp,
-                    sellDetails.sell_amount,
-                    sellDetails.received_sol,
-                    sellDetails.sell_value_usd,
-                    sellDetails.profit_usd,
-                    sellDetails.profit_percent,
-                    sellDetails.sell_market_cap,
-                    sellDetails.market_cap_change,
-                    sellDetails.sell_liquidity,
-                    sellDetails.liquidity_change,
-                    sellDetails.rapidDump ? 1 : 0,
-                    tokenAddress,
-                    recommenderId,
-                    buyTimeStamp
-                );
+            const result = this.db.prepare(sql).run(
+                sellDetails.sell_price,
+                sellDetails.sell_timeStamp,
+                sellDetails.sell_amount,
+                sellDetails.received_sol,
+                sellDetails.sell_value_usd,
+                sellDetails.profit_usd,
+                sellDetails.profit_percent,
+                sellDetails.sell_market_cap,
+                sellDetails.market_cap_change,
+                sellDetails.sell_liquidity,
+                sellDetails.liquidity_change,
+                sellDetails.rapidDump ? 1 : 0,
+                sellDetails.sell_recommender_id,
+                tokenAddress,
+                recommenderId,
+                buyTimeStamp
+            );
 
             if (result.changes === 0) {
                 console.warn(
@@ -1228,12 +1231,6 @@ export class TrustScoreDatabase {
                 return false;
             }
 
-            console.log(`Updated trade in ${tableName}:`, {
-                token_address: tokenAddress,
-                recommender_id: recommenderId,
-                buy_timeStamp: buyTimeStamp,
-                ...sellDetails,
-            });
             return true;
         } catch (error) {
             console.error(`Error updating trade in ${tableName}:`, error);
@@ -1360,7 +1357,7 @@ export class TrustScoreDatabase {
             price,
             is_simulation,
             timestamp
-        ) VALUES (?, ?, ?, ?, ?, ?);
+        ) VALUES (?, ?, ?, ?, ?, ?, ?);
     `;
         try {
             this.db
@@ -1371,7 +1368,7 @@ export class TrustScoreDatabase {
                     transaction.type,
                     transaction.amount,
                     transaction.price,
-                    transaction.isSimulation,
+                    transaction.isSimulation ? 1 : 0,
                     transaction.timestamp
                 );
             return true;
@@ -1414,6 +1411,45 @@ export class TrustScoreDatabase {
                 timestamp: new Date(row.timestamp).toISOString(),
             };
         });
+    }
+        /**
+     * Executes a custom query on the trade table with parameters.
+     * @param query SQL query string
+     * @param params Query parameters
+     * @returns Array of TradePerformance objects
+     */
+        getTradesByQuery(query: string, params: any[]): TradePerformance[] {
+            try {
+                const rows = this.db.prepare(query).all(params) as any[];
+
+                return rows.map(row => ({
+                    token_address: row.token_address,
+                    recommender_id: row.recommender_id,
+                    buy_price: row.buy_price,
+                    sell_price: row.sell_price,
+                    buy_timeStamp: row.buy_timeStamp,
+                    sell_timeStamp: row.sell_timeStamp,
+                    buy_amount: row.buy_amount,
+                    sell_amount: row.sell_amount,
+                    buy_sol: row.buy_sol,
+                    received_sol: row.received_sol,
+                    buy_value_usd: row.buy_value_usd,
+                    sell_value_usd: row.sell_value_usd,
+                    profit_usd: row.profit_usd,
+                    profit_percent: row.profit_percent,
+                    buy_market_cap: row.buy_market_cap,
+                    sell_market_cap: row.sell_market_cap,
+                    market_cap_change: row.market_cap_change,
+                    buy_liquidity: row.buy_liquidity,
+                    sell_liquidity: row.sell_liquidity,
+                    liquidity_change: row.liquidity_change,
+                    last_updated: row.last_updated,
+                    rapidDump: row.rapidDump === 1
+                }));
+            } catch (error) {
+                console.error("Error executing trade query:", error);
+                return [];
+            }
     }
 
     /**
