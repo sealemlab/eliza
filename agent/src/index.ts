@@ -1066,3 +1066,20 @@ startAgents().catch((error) => {
     elizaLogger.error("Unhandled error in startAgents:", error);
     process.exit(1);
 });
+
+// Add API key validation function
+function validateApiKeys(character: Character) {
+    const apiKey = character.settings?.secrets?.GOOGLE_GENERATIVE_AI_API_KEY;
+
+    if (!apiKey) {
+        throw new Error("Missing GOOGLE_GENERATIVE_AI_API_KEY in character settings");
+    }
+
+    // Check if the API key is still a template variable
+    if (apiKey === "${GOOGLE_GENERATIVE_AI_API_KEY}") {
+        throw new Error("GOOGLE_GENERATIVE_AI_API_KEY not properly interpolated");
+    }
+
+    // Log partial key for debugging (first 6 chars only)
+    elizaLogger.info(`API Key configured: ${apiKey.substring(0, 6)}...`);
+}
