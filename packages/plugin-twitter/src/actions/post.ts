@@ -22,33 +22,19 @@ async function composeTweet(
 ): Promise<string> {
     try {
         console.log("[plugin-twitter] ▶ composeTweet - entering function");
-
-        // Add length constraint to the context/prompt
         const context = composeContext({
             state,
-            template: {
-                ...tweetTemplate,
-                // Add length constraint to system message
-                system: `${tweetTemplate.system}\nIMPORTANT: Your response must be under 280 characters.`,
-                // You could also add a reminder in the user message
-                user: `${tweetTemplate.user}\nRemember to keep your response under 280 characters.`
-            },
+            template: tweetTemplate,
         });
-
         console.log("[plugin-twitter] ▶ composeTweet - computed context:", context.result);
-
         const tweetContentObject = await generateObject({
             runtime,
             context,
             modelClass: ModelClass.SMALL,
             schema: TweetSchema,
             stop: ["\n"],
-            // Add max_tokens parameter if your model provider supports it
-            max_tokens: DEFAULT_MAX_TWEET_LENGTH,
         });
-
         console.log("[plugin-twitter] ▶ composeTweet - raw generated object:", tweetContentObject);
-
         if (!isTweetContent(tweetContentObject.object)) {
             elizaLogger.error(
                 "Invalid tweet content:",
@@ -59,15 +45,14 @@ async function composeTweet(
 
         let trimmedContent = tweetContentObject.object.text.trim();
 
-        // Double check length as a safety measure
-        const maxTweetLength = runtime.getSetting("MAX_TWEET_LENGTH") || DEFAULT_MAX_TWEET_LENGTH;
-        if (trimmedContent.length > maxTweetLength) {
+        // Truncate the content to the maximum tweet length specified in the environment settings.
+        const maxTweetLength = runtime.getSetting("MAX_TWEET_LENGTH");
+        if (maxTweetLength) {
             trimmedContent = truncateToCompleteSentence(
                 trimmedContent,
-                maxTweetLength
+                Number(maxTweetLength)
             );
         }
-
         console.log("[plugin-twitter] ▶ composeTweet - final tweet content:", trimmedContent);
         return trimmedContent;
     } catch (error) {
@@ -77,7 +62,6 @@ async function composeTweet(
 }
 
 async function sendTweet(twitterClient: Scraper, content: string) {
-    console.log("[plugin-twitter] ▶ sendTweet - sending standard tweet:", content);
     const result = await twitterClient.sendTweet(content);
 
     const body = await result.json();
@@ -98,7 +82,6 @@ async function sendTweet(twitterClient: Scraper, content: string) {
         return false;
     }
 
-    console.log("[plugin-twitter] ▶ sendTweet - tweet posted successfully");
     return true;
 }
 
@@ -152,7 +135,7 @@ async function postTweet(
                 }
             } else {
 
-                console.log("[plugin-twitter] ▶ postTweet - content length <= 280; standard tweet");
+
                 return await sendTweet(scraper, content);
             }
         } catch (error) {
