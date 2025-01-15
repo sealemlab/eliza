@@ -4,10 +4,8 @@
     "modelProvider": "google",
     "settings": {
         "secrets": {
-            "GOOGLE_GENERATIVE_AI_API_KEY": "${GOOGLE_GENERATIVE_AI_API_KEY}",
-            "TWITTER_USERNAME": "${Bot1_TWITTER_USERNAME}",
-            "TWITTER_PASSWORD": "${Bot1_TWITTER_PASSWORD}",
-            "TWITTER_EMAIL": "${Bot1_TWITTER_EMAIL}"
+            "GOOGLE_GENERATIVE_AI_API_KEY": "${GOOGLE_GENERATIVE_AI_API_KEY}"
+
 
         }
     },
