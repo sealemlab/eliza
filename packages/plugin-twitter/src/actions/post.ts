@@ -24,7 +24,11 @@ async function composeTweet(
         console.log("[plugin-twitter] ▶ composeTweet - entering function");
         const context = composeContext({
             state,
-            template: tweetTemplate,
+            template: {
+                ...tweetTemplate,
+                system: `${tweetTemplate.system}\nIMPORTANT: Your response must be under 280 characters.`,
+                user: `${tweetTemplate.user}\nRemember to keep your response under 280 characters.`
+            },
         });
         console.log("[plugin-twitter] ▶ composeTweet - computed context:", context.result);
         const tweetContentObject = await generateObject({
@@ -33,6 +37,7 @@ async function composeTweet(
             modelClass: ModelClass.SMALL,
             schema: TweetSchema,
             stop: ["\n"],
+            max_tokens: DEFAULT_MAX_TWEET_LENGTH,
         });
         console.log("[plugin-twitter] ▶ composeTweet - raw generated object:", tweetContentObject);
         if (!isTweetContent(tweetContentObject.object)) {
@@ -45,12 +50,11 @@ async function composeTweet(
 
         let trimmedContent = tweetContentObject.object.text.trim();
 
-        // Truncate the content to the maximum tweet length specified in the environment settings.
-        const maxTweetLength = runtime.getSetting("MAX_TWEET_LENGTH");
-        if (maxTweetLength) {
+        const maxTweetLength = runtime.getSetting("MAX_TWEET_LENGTH") || DEFAULT_MAX_TWEET_LENGTH;
+        if (trimmedContent.length > maxTweetLength) {
             trimmedContent = truncateToCompleteSentence(
                 trimmedContent,
-                Number(maxTweetLength)
+                maxTweetLength
             );
         }
         console.log("[plugin-twitter] ▶ composeTweet - final tweet content:", trimmedContent);
