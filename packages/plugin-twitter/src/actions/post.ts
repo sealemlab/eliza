@@ -21,11 +21,12 @@ async function composeTweet(
     state?: State
 ): Promise<string> {
     try {
+        console.log("[plugin-twitter] ▶ composeTweet - entering function");
         const context = composeContext({
             state,
             template: tweetTemplate,
         });
-
+        console.log("[plugin-twitter] ▶ composeTweet - computed context:", context.result);
         const tweetContentObject = await generateObject({
             runtime,
             context,
@@ -33,7 +34,7 @@ async function composeTweet(
             schema: TweetSchema,
             stop: ["\n"],
         });
-
+        console.log("[plugin-twitter] ▶ composeTweet - raw generated object:", tweetContentObject);
         if (!isTweetContent(tweetContentObject.object)) {
             elizaLogger.error(
                 "Invalid tweet content:",
@@ -52,7 +53,7 @@ async function composeTweet(
                 Number(maxTweetLength)
             );
         }
-
+        console.log("[plugin-twitter] ▶ composeTweet - final tweet content:", trimmedContent);
         return trimmedContent;
     } catch (error) {
         elizaLogger.error("Error composing tweet:", error);
@@ -61,6 +62,7 @@ async function composeTweet(
 }
 
 async function sendTweet(twitterClient: Scraper, content: string) {
+    console.log("[plugin-twitter] ▶ sendTweet - sending standard tweet:", content);
     const result = await twitterClient.sendTweet(content);
 
     const body = await result.json();
@@ -81,6 +83,7 @@ async function sendTweet(twitterClient: Scraper, content: string) {
         return false;
     }
 
+    console.log("[plugin-twitter] ▶ sendTweet - tweet posted successfully");
     return true;
 }
 
@@ -89,6 +92,8 @@ async function postTweet(
     content: string
 ): Promise<boolean> {
     try {
+
+        console.log("[plugin-twitter] ▶ postTweet - content:", content);
         const twitterClient = runtime.clients.twitter?.client?.twitterClient;
         const scraper = twitterClient || new Scraper();
 
@@ -97,7 +102,7 @@ async function postTweet(
             const password = runtime.getSetting("TWITTER_PASSWORD");
             const email = runtime.getSetting("TWITTER_EMAIL");
             const twitter2faSecret = runtime.getSetting("TWITTER_2FA_SECRET");
-
+            console.log("[plugin-twitter] ▶ postTweet - user:", username, " email:", email);
             if (!username || !password) {
                 elizaLogger.error(
                     "Twitter credentials not configured in environment"
@@ -110,6 +115,7 @@ async function postTweet(
                 elizaLogger.error("Failed to login to Twitter");
                 return false;
             }
+            console.log("[plugin-twitter] ▶ postTweet - isLoggedIn:", await scraper.isLoggedIn());
         }
 
         // Send the tweet
@@ -117,6 +123,8 @@ async function postTweet(
 
         try {
             if (content.length > DEFAULT_MAX_TWEET_LENGTH) {
+                console.log("[plugin-twitter] ▶ postTweet - content length > 280; sending note tweet");
+
                 const noteTweetResult = await scraper.sendNoteTweet(content);
                 if (
                     noteTweetResult.errors &&
@@ -128,6 +136,8 @@ async function postTweet(
                     return true;
                 }
             } else {
+
+                console.log("[plugin-twitter] ▶ postTweet - content length <= 280; standard tweet");
                 return await sendTweet(scraper, content);
             }
         } catch (error) {
@@ -157,6 +167,13 @@ export const postAction: Action = {
         const username = runtime.getSetting("TWITTER_USERNAME");
         const password = runtime.getSetting("TWITTER_PASSWORD");
         const email = runtime.getSetting("TWITTER_EMAIL");
+
+
+        console.log("[plugin-twitter] ▶ postAction.validate - TWITTER_USERNAME:", username);
+        console.log("[plugin-twitter] ▶ postAction.validate - TWITTER_PASSWORD:", password ? "" : "undefined");
+        console.log("[plugin-twitter] ▶ postAction.validate - TWITTER_EMAIL:", email);
+
+
         const hasCredentials = !!username && !!password && !!email;
         elizaLogger.log(`Has credentials: ${hasCredentials}`);
 
@@ -169,14 +186,17 @@ export const postAction: Action = {
     ): Promise<boolean> => {
         try {
             // Generate tweet content using context
+            console.log("[plugin-twitter] ▶ postAction.handler - composing tweet...");
             const tweetContent = await composeTweet(runtime, message, state);
 
             if (!tweetContent) {
                 elizaLogger.error("No content generated for tweet");
                 return false;
+
+
             }
 
-            elizaLogger.log(`Generated tweet content: ${tweetContent}`);
+            console.log("[plugin-twitter] ▶ postAction.handler - generated content:", tweetContent);
 
             // Check for dry run mode - explicitly check for string "true"
             if (
