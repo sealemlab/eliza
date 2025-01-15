@@ -22,19 +22,33 @@ async function composeTweet(
 ): Promise<string> {
     try {
         console.log("[plugin-twitter] ▶ composeTweet - entering function");
+
+        // Add length constraint to the context/prompt
         const context = composeContext({
             state,
-            template: tweetTemplate,
+            template: {
+                ...tweetTemplate,
+                // Add length constraint to system message
+                system: `${tweetTemplate.system}\nIMPORTANT: Your response must be under 280 characters.`,
+                // You could also add a reminder in the user message
+                user: `${tweetTemplate.user}\nRemember to keep your response under 280 characters.`
+            },
         });
+
         console.log("[plugin-twitter] ▶ composeTweet - computed context:", context.result);
+
         const tweetContentObject = await generateObject({
             runtime,
             context,
             modelClass: ModelClass.SMALL,
             schema: TweetSchema,
             stop: ["\n"],
+            // Add max_tokens parameter if your model provider supports it
+            max_tokens: DEFAULT_MAX_TWEET_LENGTH,
         });
+
         console.log("[plugin-twitter] ▶ composeTweet - raw generated object:", tweetContentObject);
+
         if (!isTweetContent(tweetContentObject.object)) {
             elizaLogger.error(
                 "Invalid tweet content:",
@@ -45,14 +59,15 @@ async function composeTweet(
 
         let trimmedContent = tweetContentObject.object.text.trim();
 
-        // Truncate the content to the maximum tweet length specified in the environment settings.
-        const maxTweetLength = runtime.getSetting("MAX_TWEET_LENGTH");
-        if (maxTweetLength) {
+        // Double check length as a safety measure
+        const maxTweetLength = runtime.getSetting("MAX_TWEET_LENGTH") || DEFAULT_MAX_TWEET_LENGTH;
+        if (trimmedContent.length > maxTweetLength) {
             trimmedContent = truncateToCompleteSentence(
                 trimmedContent,
-                Number(maxTweetLength)
+                maxTweetLength
             );
         }
+
         console.log("[plugin-twitter] ▶ composeTweet - final tweet content:", trimmedContent);
         return trimmedContent;
     } catch (error) {
