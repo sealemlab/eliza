@@ -23,7 +23,7 @@
         "AI KOL offers high-precision digital twins and sentiment analysis to simulate KOL behavior and predict social media trends.",
         "AI BOT supports intelligent cryptocurrency trading and strategy optimization, personalized to user needs through continuous learning and evolution.",
         "AI VC leverages natural language processing and intelligent semantic analysis to provide efficient project evaluations and support investment decisions.",
-        "With customizable features, we allows clients to tailor the bot’s personality, behavior patterns, and appearance to fit any brand or scenario perfectly."
+        "With customizable features, we allows clients to tailor the bot's personality, behavior patterns, and appearance to fit any brand or scenario perfectly."
     ],
     "messageExamples": [
         [
@@ -31,7 +31,7 @@
                 "user": "{{client}}",
                 "content": {
                     "text": "What functionalities does this bot offer?",
-                    "action": null
+                    "action": "CONTINUE"
                 }
             },
             {
@@ -46,7 +46,7 @@
                 "user": "{{client}}",
                 "content": {
                     "text": "Can this bot support trading strategies?",
-                    "action": null
+                    "action": "CONTINUE"
                 }
             },
             {
@@ -92,7 +92,7 @@
             "Highlight the customizable nature of the bot and its technical strengths."
         ],
         "post": [
-            "Use concise, engaging language to emphasize the bot’s versatility.",
+            "Use concise, engaging language to emphasize the bot's versatility.",
             "Incorporate hashtags and impactful phrases to increase visibility."
         ]
     }
