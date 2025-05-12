@@ -9,7 +9,12 @@
             "GOOGLE_GENERATIVE_AI_API_KEY": "AIzaSyD-Ukyw8wOiidGXtnBz9t077e-JFKckapc",
             "TWITTER_USERNAME": "FannyDobbi92148",
             "TWITTER_PASSWORD": "msbs5532",
-            "TWITTER_EMAIL": "kajalesvevadp@hotmail.com"
+            "TWITTER_EMAIL": "kajalesvevadp@hotmail.com",
+            "POST_INTERVAL_MIN": "90",
+            "POST_INTERVAL_MAX": "180",
+            "TWITTER_DRY_RUN": "false",
+            "ENABLE_ACTION_PROCESSING": "false",
+            "POST_IMMEDIATELY": "true"
         }
     },
     "bio": [
