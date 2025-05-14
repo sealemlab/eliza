@@ -10,8 +10,8 @@
             "TWITTER_USERNAME": "EugeneWalp68754",
             "TWITTER_PASSWORD": "essu3916",
             "TWITTER_EMAIL": "shilavafqirh@hotmail.com",
-            "POST_INTERVAL_MIN": "5",
-            "POST_INTERVAL_MAX": "10",
+            "POST_INTERVAL_MIN": "90",
+            "POST_INTERVAL_MAX": "180",
             "TWITTER_DRY_RUN": "false",
             "ENABLE_ACTION_PROCESSING": "false",
             "POST_IMMEDIATELY": "false"
