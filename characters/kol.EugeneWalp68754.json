@@ -6,7 +6,7 @@
     "plugins": [],
     "settings": {
         "secrets": {
-            "GOOGLE_GENERATIVE_AI_API_KEY": "${GOOGLE_GENERATIVE_AI_API_KEY}",
+            "GOOGLE_GENERATIVE_AI_API_KEY": "process.env.GOOGLE_GENERATIVE_AI_API_KEY",
             "TWITTER_USERNAME": "EugeneWalp68754",
             "TWITTER_PASSWORD": "essu3916",
             "TWITTER_EMAIL": "shilavafqirh@hotmail.com",

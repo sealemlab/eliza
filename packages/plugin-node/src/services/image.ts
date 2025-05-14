@@ -199,7 +199,9 @@ class GoogleImageProvider implements ImageProvider {
         mimeType: string
     ): Promise<{ title: string; description: string }> {
         const endpoint = getEndpoint(ModelProviderName.GOOGLE);
-        const apiKey = this.runtime.getSetting("GOOGLE_GENERATIVE_AI_API_KEY");
+        const apiKey =
+            this.runtime.getSetting("GOOGLE_GENERATIVE_AI_API_KEY") ||
+            process.env.GOOGLE_GENERATIVE_AI_API_KEY;
 
         const response = await fetch(
             `${endpoint}/v1/models/gemini-1.5-pro:generateContent?key=${apiKey}`,
