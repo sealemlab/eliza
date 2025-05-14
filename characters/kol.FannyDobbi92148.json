@@ -10,8 +10,8 @@
             "TWITTER_USERNAME": "FannyDobbi92148",
             "TWITTER_PASSWORD": "msbs5532",
             "TWITTER_EMAIL": "kajalesvevadp@hotmail.com",
-            "POST_INTERVAL_MIN": "90",
-            "POST_INTERVAL_MAX": "180",
+            "POST_INTERVAL_MIN": "5",
+            "POST_INTERVAL_MAX": "10",
             "TWITTER_DRY_RUN": "false",
             "ENABLE_ACTION_PROCESSING": "false",
             "POST_IMMEDIATELY": "true"

@@ -10,8 +10,8 @@
             "TWITTER_USERNAME": "sonmerfiel68723",
             "TWITTER_PASSWORD": "rcyt7243",
             "TWITTER_EMAIL": "alaxmekkeh7@hotmail.com",
-            "POST_INTERVAL_MIN": "90",
-            "POST_INTERVAL_MAX": "180",
+            "POST_INTERVAL_MIN": "5",
+            "POST_INTERVAL_MAX": "10",
             "TWITTER_DRY_RUN": "false",
             "ENABLE_ACTION_PROCESSING": "false",
             "POST_IMMEDIATELY": "true"
