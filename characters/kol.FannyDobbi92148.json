@@ -14,7 +14,7 @@
             "POST_INTERVAL_MAX": "180",
             "TWITTER_DRY_RUN": "false",
             "ENABLE_ACTION_PROCESSING": "false",
-            "POST_IMMEDIATELY": "false"
+            "POST_IMMEDIATELY": "true"
         }
     },
     "bio": [
