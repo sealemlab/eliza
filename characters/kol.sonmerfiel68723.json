@@ -6,7 +6,7 @@
     "plugins": [],
     "settings": {
         "secrets": {
-            "GOOGLE_GENERATIVE_AI_API_KEY": "AIzaSyD-Ukyw8wOiidGXtnBz9t077e-JFKckapc",
+            "GOOGLE_GENERATIVE_AI_API_KEY": "${GOOGLE_GENERATIVE_AI_API_KEY}",
             "TWITTER_USERNAME": "sonmerfiel68723",
             "TWITTER_PASSWORD": "rcyt7243",
             "TWITTER_EMAIL": "alaxmekkeh7@hotmail.com",
